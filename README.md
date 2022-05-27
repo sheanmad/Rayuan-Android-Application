@@ -1,5 +1,6 @@
 
 Bangkit 2022 Capstone Project
+
 # Rayuan (Rate your handwriting) #
 
 Improving handwriting can take a long time. Thus, we are proposing an education app to help users achieve better handwriting. The idea is to build an AI model on Android to rate handwriting via camera captures. Users need to take a photo of their handwriting with the app for an AI model to predict whether the user’s handwriting is good or bad. Finally, the app will rate the handwriting with the result of the prediction given by the AI model.
