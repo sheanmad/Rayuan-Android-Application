@@ -16,7 +16,7 @@ https://iastate.figshare.com/articles/dataset/CSAFE_Handwriting_Database/1006220
 - ViewModel
 - Retrofit
 - Kotlin Coroutines
-- Camerax
+- CameraX
 
 # Additional resources #
 
