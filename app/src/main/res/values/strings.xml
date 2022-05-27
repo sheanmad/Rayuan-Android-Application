@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Rayuan</string>
+    <string name="imgLogo">imgLogo</string>
+
+    <string name="title">Rayuan</string>
+    <string name="title_2">Rating Your Handwriting</string>
+    <string name="desc">Deskripsi</string>
+    <string name="start_btn">Start</string>
+
+    <string name="no_permission">Permission not granted</string>
+
+    <string name="camera">Camera</string>
+    <string name="gallery">Gallery</string>
+    <string name="upload">Upload</string>
+    <string name="previewImageView">previewImageView</string>
+</resources>
