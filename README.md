@@ -25,4 +25,4 @@ https://iastate.figshare.com/articles/dataset/CSAFE_Handwriting_Database/1006220
     * https://colab.research.google.com/drive/1w-_2Use03LO7YraVNan-y8mpAA1wI2as?authuser=2#scrollTo=QGFocJkayanD
 
 * Cloud computing repository
-    * https://google.com/
+    * https://github.com/fahmi-g/Rayuan-Image-Classification-API
