@@ -22,7 +22,7 @@ class WelcomeActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupAction()
         setupView()
-        playAnimation()
+        //playAnimation()
     }
 
     private fun setupView() {
@@ -44,17 +44,17 @@ class WelcomeActivity : AppCompatActivity() {
         }
     }
 
-    private fun playAnimation() {
-        val title = ObjectAnimator.ofFloat(binding.titleTextView, View.ALPHA, 1f).setDuration(500)
-        val title2 = ObjectAnimator.ofFloat(binding.title2TextView, View.ALPHA, 1f).setDuration(500)
-        val desc = ObjectAnimator.ofFloat(binding.descTextView, View.ALPHA, 1f).setDuration(500)
-        val start = ObjectAnimator.ofFloat(binding.startButton, View.ALPHA, 1f).setDuration(500)
-
-        AnimatorSet().apply {
-            playSequentially(title, title2, desc, start)
-            start()
-        }
-    }
+//    private fun playAnimation() {
+//        val title = ObjectAnimator.ofFloat(binding.titleTextView, View.ALPHA, 1f).setDuration(500)
+//        val title2 = ObjectAnimator.ofFloat(binding.title2TextView, View.ALPHA, 1f).setDuration(500)
+//        val desc = ObjectAnimator.ofFloat(binding.descTextView, View.ALPHA, 1f).setDuration(500)
+//        val start = ObjectAnimator.ofFloat(binding.startButton, View.ALPHA, 1f).setDuration(500)
+//
+//        AnimatorSet().apply {
+//            playSequentially(title, title2, desc, start)
+//            start()
+//        }
+//    }
 
 
 }
