@@ -22,7 +22,6 @@ class WelcomeActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupAction()
         setupView()
-        //playAnimation()
     }
 
     private fun setupView() {
@@ -39,22 +38,11 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     private fun setupAction() {
-        binding.startButton.setOnClickListener {
-            startActivity(Intent(this, UploadActivity::class.java))
-        }
+        binding.startButton.setOnClickListener { startUpload() }
     }
 
-//    private fun playAnimation() {
-//        val title = ObjectAnimator.ofFloat(binding.titleTextView, View.ALPHA, 1f).setDuration(500)
-//        val title2 = ObjectAnimator.ofFloat(binding.title2TextView, View.ALPHA, 1f).setDuration(500)
-//        val desc = ObjectAnimator.ofFloat(binding.descTextView, View.ALPHA, 1f).setDuration(500)
-//        val start = ObjectAnimator.ofFloat(binding.startButton, View.ALPHA, 1f).setDuration(500)
-//
-//        AnimatorSet().apply {
-//            playSequentially(title, title2, desc, start)
-//            start()
-//        }
-//    }
-
+    private fun startUpload(){
+        startActivity(Intent(this, UploadActivity::class.java))
+    }
 
 }

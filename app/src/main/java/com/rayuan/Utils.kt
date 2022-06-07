@@ -7,7 +7,9 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Matrix
 import android.net.Uri
+import android.os.Build
 import android.os.Environment
+import androidx.annotation.RequiresApi
 import com.rayuan.R
 import java.io.*
 import java.text.SimpleDateFormat
@@ -80,6 +82,7 @@ fun uriToFile(selectedImg: Uri, context: Context): File {
     return myFile
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 fun reduceFileImage(file: File): File {
     val bitmap = BitmapFactory.decodeFile(file.path)
     var compressQuality = 100
@@ -93,4 +96,33 @@ fun reduceFileImage(file: File): File {
     } while (streamLength > 1000000)
     bitmap.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
     return file
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun encoderBase64(file: File): String {
+    var inputStream: InputStream? = null
+    inputStream = try {
+        FileInputStream(file)
+    } catch (e: FileNotFoundException) {
+        throw RuntimeException(e)
+    }
+
+    val bytes: ByteArray
+    val buffer = ByteArray(8192)
+    var bytesRead: Int
+    val output = ByteArrayOutputStream()
+
+    try {
+        if (inputStream != null) {
+            while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                output.write(buffer, 0, bytesRead)
+            }
+        }
+    } catch (e: IOException) {
+        e.printStackTrace()
+    }
+
+    bytes = output.toByteArray()
+    val encodedString = Base64.getEncoder().encodeToString(bytes)
+    return encodedString
 }

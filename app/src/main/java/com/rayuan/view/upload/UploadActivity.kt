@@ -8,23 +8,37 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.rayuan.R
+import com.rayuan.api.ApiConfig
+import com.rayuan.api.ApiService
 import com.rayuan.databinding.ActivityUploadBinding
+import com.rayuan.response.ResponseRating
 import com.rayuan.view.camera.CameraActivity
+import com.rayuan.view.rating.RatingActivity
+import com.rayuan.view.utils.encoderBase64
+import com.rayuan.view.utils.reduceFileImage
 import com.rayuan.view.utils.rotateBitmap
 import com.rayuan.view.utils.uriToFile
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.RequestBody.Companion.toRequestBody
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import java.io.File
 
 class UploadActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUploadBinding
     private var getFile: File? = null
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityUploadBinding.inflate(layoutInflater)
@@ -54,9 +68,11 @@ class UploadActivity : AppCompatActivity() {
         supportActionBar?.hide()
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setupAction() {
         binding.cameraButton.setOnClickListener { startCameraX() }
         binding.galleryButton.setOnClickListener { startGallery() }
+        binding.uploadButton.setOnClickListener { startUpload() }
     }
 
     private fun startCameraX() {
@@ -87,6 +103,59 @@ class UploadActivity : AppCompatActivity() {
         intent.type = "image/*"
         val chooser = Intent.createChooser(intent, "Choose a Picture")
         launcherIntentGallery.launch(chooser)
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    private fun startUpload() {
+        when {
+            ((getFile != null)) -> {
+                val imagefile = reduceFileImage(getFile as File)
+
+//                val requestImageFile = file.asRequestBody("image/jpeg".toMediaTypeOrNull())
+//                val imageMultipart : RequestBody.Part = MultipartBody.Part.createFormData(
+//                    "photo",
+//                    file.name,
+//                    requestImageFile
+//                )
+
+                val imageEncoded = encoderBase64(imagefile)
+                Log.d(TAG, encoderBase64(imagefile))
+                val key = "key:AIzaSyCyZy2Y9hEmZfB0D9HN0sLU_giOPcJkDsQ"
+                val service = ApiConfig().getApiService().uploadImage(key,imageEncoded)
+                service.enqueue(object : Callback<ResponseRating> {
+                    override fun onResponse(
+                        call: Call<ResponseRating>,
+                        response: Response<ResponseRating>
+                    ){
+                        if (response.isSuccessful) {
+                            val responseBody = response.body()
+                            if (responseBody != null) {
+                                Toast.makeText(this@UploadActivity, getString(R.string.uploadSuccess), Toast.LENGTH_SHORT).show()
+                                val intent = Intent(this@UploadActivity, RatingActivity::class.java)
+                                intent.flags =
+                                    Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                                startActivity(intent)
+                                finish()
+                            }
+                        } else {
+                            Toast.makeText(this@UploadActivity, response.message(), Toast.LENGTH_SHORT).show()
+                            Log.e(TAG, response.message())
+                        }
+                    }
+                    override fun onFailure(call: Call<ResponseRating>, t: Throwable) {
+                        Toast.makeText(this@UploadActivity, getString(R.string.failedRetrofitInstance), Toast.LENGTH_SHORT).show()
+                    }
+                })
+
+
+            }
+            ((getFile == null)) -> {
+                Toast.makeText(this@UploadActivity, getString(R.string.imageWarning), Toast.LENGTH_SHORT).show()
+            }
+//            else -> {
+//                Toast.makeText(this@UploadActivity, getString(R.string.no_data_warning), Toast.LENGTH_SHORT).show()
+//            }
+        }
     }
 
     private val launcherIntentGallery = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -120,6 +189,8 @@ class UploadActivity : AppCompatActivity() {
 
     companion object {
         const val CAMERA_X_RESULT = 200
+
+        private const val TAG = "Error"
 
         private val REQUIRED_PERMISSIONS = arrayOf(Manifest.permission.CAMERA)
         private const val REQUEST_CODE_PERMISSIONS = 10
