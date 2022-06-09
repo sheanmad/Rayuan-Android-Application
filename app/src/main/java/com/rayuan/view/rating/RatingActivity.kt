@@ -1,10 +1,12 @@
 package com.rayuan.view.rating
 
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Base64
 import android.view.WindowInsets
 import android.view.WindowManager
 import com.rayuan.R
@@ -46,7 +48,10 @@ class RatingActivity : AppCompatActivity() {
 
     private fun showRating(){
         val labelRating = intent.getStringExtra(LABEL)
-        val handwritingPhoto = Uri.parse(intent.getStringExtra(HANDWRITING))
+        val handwritingPhoto = (intent.getStringExtra(HANDWRITING))
+        val imageBytes = Base64.decode(handwritingPhoto, Base64.DEFAULT)
+        val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+
         when (labelRating) {
             "Uncertain" -> {
                 binding.previewImageView.setImageResource(R.drawable.stars1)
@@ -66,7 +71,7 @@ class RatingActivity : AppCompatActivity() {
         }
         binding.apply {
             ratingTextView.text=getString(R.string.viewRating)
-            previewHandwritingView.setImageURI(handwritingPhoto)
+            previewHandwritingView.setImageBitmap(decodedImage)
             labelTextView.text=labelRating
         }
     }

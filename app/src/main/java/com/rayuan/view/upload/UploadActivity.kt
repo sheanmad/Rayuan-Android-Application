@@ -120,7 +120,8 @@ class UploadActivity : AppCompatActivity() {
         when {
             ((getFile != null)) -> {
                 val imagefile = reduceFileImage(getFile as File)
-                val imageEncoded = encoderBase64(imagefile).toRequestBody()
+                val imageBase64 = encoderBase64(imagefile)
+                val imageEncoded = imageBase64.toRequestBody()
                 Log.d(ENCODED, encoderBase64(imagefile))
                 val service = ApiConfig().getApiService().uploadImage(ApiService.api_key,imageEncoded)
                 service.enqueue(object : Callback<ResponseRating> {
@@ -137,7 +138,7 @@ class UploadActivity : AppCompatActivity() {
                                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 intent.apply{
                                     putExtra(RatingActivity.LABEL, responseBody.label)
-                                    putExtra(RatingActivity.HANDWRITING, imagefile)
+                                    putExtra(RatingActivity.HANDWRITING, imageBase64)
                                 }
                                 startActivity(intent)
                                 finish()
