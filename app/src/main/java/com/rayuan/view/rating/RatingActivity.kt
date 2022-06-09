@@ -4,10 +4,14 @@ import android.content.Intent
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.lifecycle.ViewModelProvider
 import com.rayuan.R
 import com.rayuan.databinding.ActivityRatingBinding
+import com.rayuan.response.ResponseRatingItem
 import com.rayuan.view.welcome.WelcomeActivity
 
 class RatingActivity : AppCompatActivity() {
@@ -20,6 +24,12 @@ class RatingActivity : AppCompatActivity() {
         setContentView(binding.root)
         setupAction()
         setupView()
+
+        val ratingViewModel = ViewModelProvider(this)[RatingViewModel::class.java]
+        ratingViewModel.listRating.observe(this) {
+            setDetailUserData(it)
+        }
+
         showRating()
     }
 
@@ -59,6 +69,13 @@ class RatingActivity : AppCompatActivity() {
         }
         else if (a==5){
             binding.previewImageView.setImageResource(R.drawable.stars5)
+        }
+    }
+
+    private fun setDetailUserData(detailUser: ResponseRatingItem) {
+        binding.apply {
+            viewItemName.text = detailUser.label
+
         }
     }
 

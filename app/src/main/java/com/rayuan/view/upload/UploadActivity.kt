@@ -21,6 +21,7 @@ import com.rayuan.api.ApiConfig
 import com.rayuan.api.ApiService
 import com.rayuan.databinding.ActivityUploadBinding
 import com.rayuan.response.ResponseRating
+import com.rayuan.response.ResponseRatingItem
 import com.rayuan.view.camera.CameraActivity
 import com.rayuan.view.rating.RatingActivity
 import com.rayuan.view.utils.encoderBase64
@@ -118,19 +119,19 @@ class UploadActivity : AppCompatActivity() {
 //                    requestImageFile
 //                )
 
-                val imageEncoded = encoderBase64(imagefile)
+                val imageEncoded = encoderBase64(imagefile).toRequestBody()
                 Log.d(TAG, encoderBase64(imagefile))
-                val key = "key:AIzaSyCyZy2Y9hEmZfB0D9HN0sLU_giOPcJkDsQ"
-                val service = ApiConfig().getApiService().uploadImage(key,imageEncoded)
-                service.enqueue(object : Callback<ResponseRating> {
+                val service = ApiConfig().getApiService().uploadImage(ApiService.api_key,imageEncoded)
+                service.enqueue(object : Callback<List<ResponseRating>> {
                     override fun onResponse(
-                        call: Call<ResponseRating>,
-                        response: Response<ResponseRating>
+                        call: Call<List<ResponseRating>>,
+                        response: Response<List<ResponseRating>>
                     ){
                         if (response.isSuccessful) {
                             val responseBody = response.body()
                             if (responseBody != null) {
                                 Toast.makeText(this@UploadActivity, getString(R.string.uploadSuccess), Toast.LENGTH_SHORT).show()
+                                Log.e(TAG, response.raw().toString())
                                 val intent = Intent(this@UploadActivity, RatingActivity::class.java)
                                 intent.flags =
                                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -138,12 +139,13 @@ class UploadActivity : AppCompatActivity() {
                                 finish()
                             }
                         } else {
-                            Toast.makeText(this@UploadActivity, response.message(), Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@UploadActivity, "response.message()", Toast.LENGTH_SHORT).show()
                             Log.e(TAG, response.message())
                         }
                     }
-                    override fun onFailure(call: Call<ResponseRating>, t: Throwable) {
+                    override fun onFailure(call: Call<List<ResponseRating>>, t: Throwable) {
                         Toast.makeText(this@UploadActivity, getString(R.string.failedRetrofitInstance), Toast.LENGTH_SHORT).show()
+                        Log.e(TAG, t.message.toString())
                     }
                 })
 
@@ -151,6 +153,7 @@ class UploadActivity : AppCompatActivity() {
             }
             ((getFile == null)) -> {
                 Toast.makeText(this@UploadActivity, getString(R.string.imageWarning), Toast.LENGTH_SHORT).show()
+                Log.e(TAG, "anjay ga ada gambar")
             }
 //            else -> {
 //                Toast.makeText(this@UploadActivity, getString(R.string.no_data_warning), Toast.LENGTH_SHORT).show()
