@@ -4,7 +4,7 @@
 
     <string name="title">Rayuan</string>
     <string name="title_2">Rating Your Handwriting</string>
-    <string name="desc">Deskripsi</string>
+    <string name="desc">Belum tau mang ini mau diisi apa atau mending dihapus aja</string>
     <string name="start_btn">Start</string>
 
     <string name="no_permission">Permission not granted</string>
@@ -22,4 +22,6 @@
     <string name="uploadSuccess">Upload Success!</string>
     <string name="failedRetrofitInstance">Failed Retrofit Instance</string>
     <string name="imageWarning">Please Add Image</string>
+    <string name="viewLabel">ratingLabel</string>
+    <string name="viewRating">Your Rating</string>
 </resources>

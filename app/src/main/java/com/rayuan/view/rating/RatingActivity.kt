@@ -1,36 +1,26 @@
 package com.rayuan.view.rating
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import android.view.WindowInsets
 import android.view.WindowManager
-import androidx.lifecycle.ViewModelProvider
 import com.rayuan.R
 import com.rayuan.databinding.ActivityRatingBinding
-import com.rayuan.response.ResponseRatingItem
 import com.rayuan.view.welcome.WelcomeActivity
 
 class RatingActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRatingBinding
-    private var a = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityRatingBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setupAction()
-        setupView()
-
-        val ratingViewModel = ViewModelProvider(this)[RatingViewModel::class.java]
-        ratingViewModel.listRating.observe(this) {
-            setDetailUserData(it)
-        }
-
         showRating()
+        setupView()
     }
 
     private fun setupView() {
@@ -55,28 +45,35 @@ class RatingActivity : AppCompatActivity() {
     }
 
     private fun showRating(){
-        if (a==1){
-            binding.previewImageView.setImageResource(R.drawable.stars1)
+        val labelRating = intent.getStringExtra(LABEL)
+        val handwritingPhoto = Uri.parse(intent.getStringExtra(HANDWRITING))
+        when (labelRating) {
+            "Uncertain" -> {
+                binding.previewImageView.setImageResource(R.drawable.stars1)
+            }
+            "Poor" -> {
+                binding.previewImageView.setImageResource(R.drawable.stars2)
+            }
+            "Okay" -> {
+                binding.previewImageView.setImageResource(R.drawable.stars3)
+            }
+            "Great" -> {
+                binding.previewImageView.setImageResource(R.drawable.stars4)
+            }
+            "Excellent" -> {
+                binding.previewImageView.setImageResource(R.drawable.stars5)
+            }
         }
-        else if (a==2){
-            binding.previewImageView.setImageResource(R.drawable.stars2)
-        }
-        else if (a==3){
-            binding.previewImageView.setImageResource(R.drawable.stars3)
-        }
-        else if (a==4){
-            binding.previewImageView.setImageResource(R.drawable.stars4)
-        }
-        else if (a==5){
-            binding.previewImageView.setImageResource(R.drawable.stars5)
+        binding.apply {
+            ratingTextView.text=getString(R.string.viewRating)
+            previewHandwritingView.setImageURI(handwritingPhoto)
+            labelTextView.text=labelRating
         }
     }
 
-    private fun setDetailUserData(detailUser: ResponseRatingItem) {
-        binding.apply {
-            viewItemName.text = detailUser.label
-
-        }
+    companion object{
+        const val LABEL="label"
+        const val HANDWRITING="handwriting"
     }
 
 }
