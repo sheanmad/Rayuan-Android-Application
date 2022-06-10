@@ -9,6 +9,8 @@ import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Base64
 import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -17,6 +19,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.bumptech.glide.Glide
 import com.rayuan.R
 import com.rayuan.api.ApiConfig
 import com.rayuan.api.ApiService
@@ -33,10 +36,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.util.*
 
 class UploadActivity : AppCompatActivity() {
     private lateinit var binding: ActivityUploadBinding
     private var getFile: File? = null
+    private var backCamera: Boolean? = null
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +97,11 @@ class UploadActivity : AppCompatActivity() {
                 isBackCamera
             )
 
-            binding.previewImageView.setImageBitmap(result)
+            //binding.previewImageView.setImageBitmap(result)
+            Glide.with(this)
+                .load(result)
+                .into(binding.previewImageView)
+            backCamera=isBackCamera
         }
     }
 
@@ -111,18 +120,25 @@ class UploadActivity : AppCompatActivity() {
 
             getFile = myFile
 
-            binding.previewImageView.setImageURI(selectedImg)
+            //binding.previewImageView.setImageURI(selectedImg)
+            Glide.with(this)
+                .load(selectedImg)
+                .into(binding.previewImageView)
         }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun startUpload() {
+        Toast.makeText(this@UploadActivity, getString(R.string.toastUploadButton), Toast.LENGTH_SHORT).show()
         when {
             ((getFile != null)) -> {
-                val imagefile = reduceFileImage(getFile as File)
-                val imageBase64 = encoderBase64(imagefile)
+                val imageFile = reduceFileImage(getFile as File)
+                val imageBase64 = encoderBase64(imageFile)
                 val imageEncoded = imageBase64.toRequestBody()
-                Log.d(ENCODED, encoderBase64(imagefile))
+                val imageBytes = Base64.decode(imageBase64, Base64.DEFAULT)
+                val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+                val imageUri = MediaStore.Images.Media.insertImage(applicationContext.getContentResolver(), decodedImage, "Rayuan" + Calendar.getInstance().getTime(), null)
+                Log.d(ENCODED, encoderBase64(imageFile))
                 val service = ApiConfig().getApiService().uploadImage(ApiService.api_key,imageEncoded)
                 service.enqueue(object : Callback<ResponseRating> {
                     override fun onResponse(
@@ -132,19 +148,21 @@ class UploadActivity : AppCompatActivity() {
                         if (response.isSuccessful) {
                             val responseBody = response.body()
                             if (responseBody != null) {
+                                Log.d(ENCODED, response.body().toString())
                                 Toast.makeText(this@UploadActivity, getString(R.string.uploadSuccess), Toast.LENGTH_SHORT).show()
                                 val intent = Intent(this@UploadActivity, RatingActivity::class.java)
                                 intent.flags =
                                     Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                                 intent.apply{
                                     putExtra(RatingActivity.LABEL, responseBody.label)
-                                    putExtra(RatingActivity.HANDWRITING, imageBase64)
+                                    putExtra(RatingActivity.HANDWRITING, imageUri)
+                                    putExtra(RatingActivity.BACK_CAMERA, backCamera.toString())
                                 }
                                 startActivity(intent)
                                 finish()
                             }
                         } else {
-                            Toast.makeText(this@UploadActivity, "response.message()", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@UploadActivity, getString(R.string.failedRetrofitInstance), Toast.LENGTH_SHORT).show()
                             Log.e(ERROR, response.message())
                         }
                     }
@@ -158,7 +176,7 @@ class UploadActivity : AppCompatActivity() {
             }
             ((getFile == null)) -> {
                 Toast.makeText(this@UploadActivity, getString(R.string.imageWarning), Toast.LENGTH_SHORT).show()
-                Log.e(ERROR, "anjay ga ada gambar")
+                Log.e(ERROR, getString(R.string.imageWarning))
             }
         }
     }

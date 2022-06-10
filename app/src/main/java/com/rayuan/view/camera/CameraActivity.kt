@@ -13,6 +13,7 @@ import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
+import com.rayuan.R
 import com.rayuan.databinding.ActivityCameraBinding
 import com.rayuan.view.upload.UploadActivity
 import com.rayuan.view.utils.createFile
@@ -66,7 +67,7 @@ class CameraActivity : AppCompatActivity() {
                 override fun onError(exc: ImageCaptureException) {
                     Toast.makeText(
                         this@CameraActivity,
-                        "Gagal mengambil gambar.",
+                        getString(R.string.pictureFailed),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -84,6 +85,7 @@ class CameraActivity : AppCompatActivity() {
             }
         )
     }
+
 
     private fun startCamera() {
 
@@ -111,7 +113,7 @@ class CameraActivity : AppCompatActivity() {
             } catch (exc: Exception) {
                 Toast.makeText(
                     this@CameraActivity,
-                    "Gagal memunculkan kamera.",
+                    getString(R.string.cameraFailed),
                     Toast.LENGTH_SHORT
                 ).show()
             }

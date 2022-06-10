@@ -1,14 +1,20 @@
 package com.rayuan.view.rating
 
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.graphics.Matrix
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.MediaStore
 import android.util.Base64
+import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.core.net.toUri
+import com.bumptech.glide.Glide
 import com.rayuan.R
 import com.rayuan.databinding.ActivityRatingBinding
 import com.rayuan.view.welcome.WelcomeActivity
@@ -48,15 +54,17 @@ class RatingActivity : AppCompatActivity() {
 
     private fun showRating(){
         val labelRating = intent.getStringExtra(LABEL)
-        val handwritingPhoto = (intent.getStringExtra(HANDWRITING))
-        val imageBytes = Base64.decode(handwritingPhoto, Base64.DEFAULT)
-        val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+        //val imageBytes = Base64.decode(handwritingPhoto, Base64.DEFAULT)
+        //val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
+        //val imageUri = MediaStore.Images.Media.insertImage(applicationContext.getContentResolver(), decodedImage, "Rayuan", null)
+        val handwritingPhoto = intent.getStringExtra(HANDWRITING)
+        val cameraStatus = intent.getStringExtra(BACK_CAMERA)
 
         when (labelRating) {
-            "Uncertain" -> {
+            "Poor" -> {
                 binding.previewImageView.setImageResource(R.drawable.stars1)
             }
-            "Poor" -> {
+            "Uncertain" -> {
                 binding.previewImageView.setImageResource(R.drawable.stars2)
             }
             "Okay" -> {
@@ -71,14 +79,74 @@ class RatingActivity : AppCompatActivity() {
         }
         binding.apply {
             ratingTextView.text=getString(R.string.viewRating)
-            previewHandwritingView.setImageBitmap(decodedImage)
+            //previewHandwritingView.setImageBitmap(decodedImage)
             labelTextView.text=labelRating
         }
+
+        //binding.previewImageView.setImageBitmap(result)
+//        Glide.with(this)
+//            .load(result)
+//            .into(binding.previewHandwritingView)
+        Log.d(BACK_CAMERA, cameraStatus.toString())
+        when (cameraStatus) {
+            "true" -> {
+                Glide.with(this)
+                    .load(rotateImageBack())
+                    .into(binding.previewHandwritingView)
+            }
+            "false" -> {
+                Glide.with(this)
+                    .load(rotateImageFront())
+                    .into(binding.previewHandwritingView)
+            }
+            else -> {
+                Glide.with(this)
+                    .load(handwritingPhoto)
+                    .into(binding.previewHandwritingView)
+            }
+        }
+    }
+
+    private fun rotateImageBack(): Bitmap? {
+        val handwritingPhoto = intent.getStringExtra(HANDWRITING)
+        val toTransform = MediaStore.Images.Media.getBitmap(this.contentResolver, handwritingPhoto?.toUri())
+        val matrix = Matrix()
+        matrix.postRotate(90F)
+
+        return Bitmap.createBitmap(
+            toTransform,
+            0,
+            0,
+            toTransform.width,
+            toTransform.height,
+            matrix,
+            true
+        )
+    }
+
+    private fun rotateImageFront(): Bitmap? {
+        val handwritingPhoto = intent.getStringExtra(HANDWRITING)
+        val toTransform = MediaStore.Images.Media.getBitmap(this.contentResolver, handwritingPhoto?.toUri())
+        val matrix = Matrix()
+        matrix.postRotate(-90f)
+        matrix.postScale(-1f, 1f, toTransform.width / 2f, toTransform.height / 2f)
+
+        return Bitmap.createBitmap(
+            toTransform,
+            0,
+            0,
+            toTransform.width,
+            toTransform.height,
+            matrix,
+            true
+        )
     }
 
     companion object{
         const val LABEL="label"
         const val HANDWRITING="handwriting"
+        const val BACK_CAMERA="back"
     }
+
 
 }

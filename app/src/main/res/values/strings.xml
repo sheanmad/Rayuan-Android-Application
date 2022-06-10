@@ -3,8 +3,7 @@
     <string name="imgLogo">imgLogo</string>
 
     <string name="title">Rayuan</string>
-    <string name="title_2">Rating Your Handwriting</string>
-    <string name="desc">Belum tau mang ini mau diisi apa atau mending dihapus aja</string>
+    <string name="title_2">Rate Your Handwriting</string>
     <string name="start_btn">Start</string>
 
     <string name="no_permission">Permission not granted</string>
@@ -20,8 +19,14 @@
     <string name="logoMenu4">logoMenu4</string>
 
     <string name="uploadSuccess">Upload Success!</string>
-    <string name="failedRetrofitInstance">Failed Retrofit Instance</string>
+    <string name="failedRetrofitInstance">Bad Request</string>
     <string name="imageWarning">Please Add Image</string>
     <string name="viewLabel">ratingLabel</string>
     <string name="viewRating">Your Rating</string>
+    <string name="pictureFailed">Failed to take picture.</string>
+    <string name="cameraFailed">Camera failed.</string>
+    <string name="toastUploadButton">Uploading</string>
+    <string name="settingBar">Settings</string>
+    <string name="darkMode">Dark Mode</string>
+
 </resources>
