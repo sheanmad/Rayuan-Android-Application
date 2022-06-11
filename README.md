@@ -22,7 +22,8 @@ https://iastate.figshare.com/articles/dataset/CSAFE_Handwriting_Database/1006220
 # Additional resources #
 
 * Machine learning model
-    * https://colab.research.google.com/drive/1w-_2Use03LO7YraVNan-y8mpAA1wI2as?authuser=2#scrollTo=QGFocJkayanD
+    * https://colab.research.google.com/drive/1w-_2Use03LO7YraVNan-y8mpAA1wI2as?authuser=2#scrollTo=QGFocJkayanD (Deprecated)
+    * https://github.com/RickyIG/Rayuan-ML-Model
 
 * Cloud computing repository
     * https://github.com/fahmi-g/Rayuan-Image-Classification-API
