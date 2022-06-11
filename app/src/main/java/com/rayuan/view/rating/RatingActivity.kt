@@ -2,14 +2,11 @@ package com.rayuan.view.rating
 
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Matrix
-import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
-import android.util.Base64
 import android.util.Log
 import android.view.WindowInsets
 import android.view.WindowManager
@@ -54,9 +51,6 @@ class RatingActivity : AppCompatActivity() {
 
     private fun showRating(){
         val labelRating = intent.getStringExtra(LABEL)
-        //val imageBytes = Base64.decode(handwritingPhoto, Base64.DEFAULT)
-        //val decodedImage = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes.size)
-        //val imageUri = MediaStore.Images.Media.insertImage(applicationContext.getContentResolver(), decodedImage, "Rayuan", null)
         val handwritingPhoto = intent.getStringExtra(HANDWRITING)
         val cameraStatus = intent.getStringExtra(BACK_CAMERA)
 
@@ -79,14 +73,8 @@ class RatingActivity : AppCompatActivity() {
         }
         binding.apply {
             ratingTextView.text=getString(R.string.viewRating)
-            //previewHandwritingView.setImageBitmap(decodedImage)
             labelTextView.text=labelRating
         }
-
-        //binding.previewImageView.setImageBitmap(result)
-//        Glide.with(this)
-//            .load(result)
-//            .into(binding.previewHandwritingView)
         Log.d(BACK_CAMERA, cameraStatus.toString())
         when (cameraStatus) {
             "true" -> {

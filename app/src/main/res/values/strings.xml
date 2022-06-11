@@ -19,7 +19,7 @@
     <string name="logoMenu4">logoMenu4</string>
 
     <string name="uploadSuccess">Upload Success!</string>
-    <string name="failedRetrofitInstance">Bad Request</string>
+    <string name="failedRetrofitInstance">Please try again!</string>
     <string name="imageWarning">Please Add Image</string>
     <string name="viewLabel">ratingLabel</string>
     <string name="viewRating">Your Rating</string>
