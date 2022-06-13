@@ -121,7 +121,7 @@
             android:id="@+id/settings"
             motion:layout_constraintEnd_toEndOf="parent"
             motion:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="350dp" />
+            android:layout_marginStart="300dp" />
     </ConstraintSet>
     <ConstraintSet
         android:id="@+id/menu2"
